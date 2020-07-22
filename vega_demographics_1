@@ -1,0 +1,414 @@
+{
+    "$schema": "https://vega.github.io/schema/vega/v5.json",
+    "width": 230,
+    "padding": 40,
+    "config": {
+        "axisBand": {
+            "bandPosition": 1,
+            "tickExtra": true,
+            "tickOffset": 0,
+            "labelFontSize": 11,
+            "labelPadding": 13,
+            "tickSize": 120
+        }
+    },
+    "signals": [
+        {
+            "name": "fields",
+            "value": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+            ]
+        },
+        {
+            "name": "plotWidth",
+            "value": 30
+        },
+        {
+            "name": "height",
+            "update": "(plotWidth + 10) * length(fields)"
+        }
+    ],
+    "data": [
+        {
+            "name": "provlvl",
+            "values": [
+                {
+                    "district": "085",
+                    "district_name": "Vancouver Island North",
+                    "records": "17%",
+                    "subpop": "Percent of Lone Parent Families",
+                    "Province": "15.3%"
+                },
+                {
+                    "district": "085",
+                    "district_name": "Vancouver Island North",
+                    "records": "67.7%",
+                    "subpop": "Percent of participation in Labour Force",
+                    "Province": "64.6%"
+                },
+                {
+                    "district": "085",
+                    "district_name": "Vancouver Island North",
+                    "records": "2.2%",
+                    "subpop": "Percent of 15-24 year-olds Recieving Employemnt Insurance",
+                    "Province": "1.5%"
+                },
+                {
+                    "district": "085",
+                    "district_name": "Vancouver Island North",
+                    "records": "$78202",
+                    "subpop": "Average Family Income Economic Families",
+                    "Province": "$91967"
+                },
+                {
+                    "district": "085",
+                    "district_name": "Vancouver Island North",
+                    "records": "49.3%",
+                    "subpop": "Percent of 25-54 without Post-Secondary Credentials",
+                    "Province": "35.2%"
+                }
+            ]
+        },
+        {
+            "name": "distminmax",
+            "source": "provlvl"
+        },
+        {
+            "name": "distcurrent",
+            "source": "provlvl"
+        },
+        {
+            "name": "quartiles",
+            "source": "provlvl"
+        },
+        {
+            "name": "label",
+            "source": "provlvl",
+            "transform": [
+                {
+                    "type": "filter",
+                    "expr": "datum.subpop == 'Percent of Lone Parent Families'"
+                }
+            ]
+        }
+    ],
+    "scales": [
+        {
+            "name": "layout",
+            "type": "band",
+            "range": "height",
+            "domain": {
+                "data": "provlvl",
+                "field": "subpop"
+            }
+        },
+        {
+            "name": "xscale",
+            "type": "linear",
+            "range": "width",
+            "round": false,
+            "domain": {
+                "data": "provlvl",
+                "field": "value"
+            },
+            "zero": true,
+            "nice": true,
+            "domainMax": 1
+        }
+    ],
+    "axes": [
+        {
+            "orient": "left",
+            "scale": "layout",
+            "zindex": 1,
+            "labelFontSize": 15,
+            "labelAlign": "left",
+            "labelColor": "#666666",
+            "tickSize": 640,
+            "labelPadding": 0,
+            "labelLimit": 1000,
+            "grid": true,
+            "gridColor": "#666666",
+            "tickColor": "#666666",
+            "title": "Province",
+            "titleAngle": 0,
+            "titleY": -5,
+            "titleX": 100,
+            "titleFontSize": 15,
+            "titleFontWeight": 100,
+            "titleColor": "#898989"
+        },
+        {
+            "orient": "bottom",
+            "scale": "xscale",
+            "zindex": 1,
+            "format": "%",
+            "labelFontSize": 15,
+            "labelAlign": "",
+            "labelColor": "#898989",
+            "labelFlush": true
+        },
+        {
+            "orient": "top",
+            "scale": "xscale",
+            "zindex": 1,
+            "format": "%",
+            "labelFontSize": 15,
+            "labelAlign": "",
+            "labelColor": "#898989",
+            "labelFlush": true,
+            "offset": 0.5,
+            "grid": true
+        }
+    ],
+    "marks": [
+        {
+            "type": "group",
+            "from": {
+                "facet": {
+                    "data": "distcurrent",
+                    "name": "rec",
+                    "groupby": "subpop"
+                }
+            },
+            "encode": {
+                "enter": {
+                    "yc": {
+                        "scale": "layout",
+                        "field": "subpop",
+                        "band": 0.5
+                    },
+                    "height": {
+                        "signal": "plotWidth"
+                    },
+                    "width": {
+                        "signal": "width"
+                    }
+                }
+            },
+            "data": [
+                {
+                    "name": "reccurrent",
+                    "source": "rec"
+                }
+            ],
+            "marks": [
+                {
+                    "type": "text",
+                    "from": {
+                        "data": "reccurrent"
+                    },
+                    "encode": {
+                        "enter": {
+                            "text": {
+                                "field": "records"
+                            },
+                            "fontSize": {
+                                "value": 15
+                            },
+                            "fill": {
+                                "value": "#898989"
+                            },
+                            "align": {
+                                "value": "center"
+                            },
+                            "tooltip": {
+                                "signal": "{'School District':datum.district_name,'':datum.subpop,' ':datum.records}"
+                            }
+                        },
+                        "update": {
+                            "yc": {
+                                "signal": "plotWidth / 1.5"
+                            },
+                            "height": {
+                                "signal": "plotWidth / 50"
+                            },
+                            "x": {
+                                "offset": -120
+                            },
+                            "stroke": {
+                                "value": null
+                            },
+                            "zindex": {
+                                "value": 0
+                            }
+                        },
+                        "hover": {
+                            "stroke": {
+                                "value": "black"
+                            },
+                            "zindex": {
+                                "value": 1
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "from": {
+                "facet": {
+                    "data": "distcurrent",
+                    "name": "rec",
+                    "groupby": "subpop"
+                }
+            },
+            "encode": {
+                "enter": {
+                    "yc": {
+                        "scale": "layout",
+                        "field": "subpop",
+                        "band": 0.5
+                    },
+                    "height": {
+                        "signal": "plotWidth"
+                    },
+                    "width": {
+                        "signal": "width"
+                    }
+                }
+            },
+            "data": [
+                {
+                    "name": "reccurrent",
+                    "source": "rec"
+                }
+            ],
+            "marks": [
+                {
+                    "type": "text",
+                    "from": {
+                        "data": "reccurrent"
+                    },
+                    "encode": {
+                        "enter": {
+                            "text": {
+                                "field": "Province"
+                            },
+                            "fontSize": {
+                                "value": 15
+                            },
+                            "fill": {
+                                "value": "#898989"
+                            },
+                            "tooltip": {
+                                "signal": "{'Province':datum.subpop,' ':datum.Province}"
+                            },
+                            "align": {
+                                "value": "center"
+                            }
+                        },
+                        "update": {
+                            "yc": {
+                                "signal": "plotWidth / 1.5"
+                            },
+                            "height": {
+                                "signal": "plotWidth / 50"
+                            },
+                            "x": {
+                                "offset": 100
+                            },
+                            "stroke": {
+                                "value": null
+                            },
+                            "zindex": {
+                                "value": 0
+                            }
+                        },
+                        "hover": {
+                            "stroke": {
+                                "value": "black"
+                            },
+                            "zindex": {
+                                "value": 1
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "from": {
+                "facet": {
+                    "data": "label",
+                    "name": "rec",
+                    "groupby": "district_name"
+                }
+            },
+            "encode": {
+                "enter": {
+                    "yc": {
+                        "scale": "layout",
+                        "field": "subpop",
+                        "band": 0.5
+                    },
+                    "height": {
+                        "signal": "plotWidth"
+                    },
+                    "width": {
+                        "signal": "width"
+                    }
+                }
+            },
+            "data": [
+                {
+                    "name": "reccurrent",
+                    "source": "rec"
+                }
+            ],
+            "marks": [
+                {
+                    "type": "text",
+                    "from": {
+                        "data": "reccurrent"
+                    },
+                    "encode": {
+                        "enter": {
+                            "text": {
+                                "field": "district_name"
+                            },
+                            "fontSize": {
+                                "value": 15
+                            },
+                            "align": {
+                                "value": "center"
+                            },
+                            "fill": [
+                                {
+                                    "test": "datum['district_name']=='Province'",
+                                    "value": ""
+                                },
+                                {
+                                    "value": "#898989"
+                                }
+                            ]
+                        },
+                        "update": {
+                            "yc": {
+                                "signal": "plotWidth / 1.5"
+                            },
+                            "height": {
+                                "signal": "55"
+                            },
+                            "x": {
+                                "offset": -125
+                            },
+                            "stroke": {
+                                "value": null
+                            },
+                            "zindex": {
+                                "value": 0
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
